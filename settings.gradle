@@ -1,1 +1,1 @@
-include ':app', ':flexviewlib'
+include ':app', ':flexlayoutlib'
