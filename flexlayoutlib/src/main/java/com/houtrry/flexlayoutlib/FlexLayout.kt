@@ -76,8 +76,8 @@ class FlexLayout : FrameLayout {
                 isSingleLine = false
                 Log.d(TAG, "index: $index, 需要换行")
                 //需要换行
-                resultHeight += maxLineHeight
                 maxLineHeight = childHeight
+                resultHeight += maxLineHeight
 
                 maxLineWidth = if (maxLineWidth > horizontalWidth) maxLineWidth else horizontalWidth
                 horizontalWidth = childWidth
@@ -97,6 +97,8 @@ class FlexLayout : FrameLayout {
         if (isSingleLine) {
             maxLineWidth = horizontalWidth
             resultHeight = maxLineHeight
+        } else {
+            resultHeight += maxLineHeight
         }
 
         resultWidth = if (widthMode == MeasureSpec.AT_MOST) maxLineWidth else widthSize
@@ -129,10 +131,29 @@ class FlexLayout : FrameLayout {
 
             left += layoutParams.leftMargin
             right = left + childWidth
-            top += layoutParams.topMargin
-            bottom = top + childHeight
+
+            if (right > measuredWidth) {
+                Log.d(TAG, "onLayout, 换行")
+                left = paddingLeft + layoutParams.leftMargin
+                right = left + childWidth
+
+                top = bottom + layoutParams.topMargin
+                bottom = top + childHeight
+            } else {
+                Log.d(TAG, "onLayout, 不换行")
+                top += layoutParams.topMargin
+                bottom = top + childHeight
+            }
+
+
+
+
+            Log.d(TAG, "onLayout, left: $left, right: $right, top: $top, bottom: $bottom, measuredWidth: $measuredWidth, childHeight: $childHeight")
 
             childView.layout(left, top, right, bottom)
+
+            left = right + layoutParams.rightMargin
+
         }
     }
 }
